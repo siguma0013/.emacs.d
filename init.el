@@ -89,116 +89,86 @@
 (when (require 'package nil t)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
   (package-initialize)
+
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (when (file-exists-p custom-file)
+    (load custom-file))
   )
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; SKK
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (require 'skk nil t)
-  (defvar jisyo (concat (getenv "HOME") "/.emacs.d/SKK-JISYO.L.cdb"))
-  (setq skk-cdb-large-jisyo jisyo)
 
-  (setq skk-inhibit-ja-dic-search t)
-
-  ;; 各種メッセージを日本語で通知する
-  (setq skk-japanese-message-and-error t)
-  (setq skk-status-indicator 'minor_mode)
-  (setq default-input-method "japanese-skk")
+(leaf counsel
+  :doc "include ivy swipper"
+  :ensure t
+  :custom (
+           (ivy-mode . t)
+           )
+  :bind (
+         ("C-s" . swiper)
+         ("C-x C-r" . counsel-recentf)
+         ("M-x" . counsel-M-x)
+         ("M-y" . counsel-yank-pop)
+         )
   )
 
-(when (require 'counsel nil t )
-  (ivy-mode 1)
-  (counsel-mode 1)
-  (setq dumb-jump-selector 'ivy)
-  (global-set-key (kbd "C-s") 'swiper)
-  (global-set-key (kbd "C-x C-r") 'counsel-recentf)
+(leaf ddskk
+  :ensure t
+  :custom (
+           (skk-large-jisyo . "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
+           (skk-japanese-message-and-error . t)
+           (skk-status-indicator . 'minor_mode)
+           (default-input-method . "japanese-skk")
+           )
   )
 
-(when (require 'company nil t)
-  (global-company-mode)
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 2)
-  (setq company-selection-warp-around t)
-  (setq company-tooltip-minimum-width 9999)
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "C-n") 'company-select-next)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "C-h") nil)
+(leaf company
+  :doc ""
+  :ensure t
+  :custom (
+           (global-company-mode . t)
+           (company-idle-delay . 0)
+           (company-minimum-prefix-length . 2)
+           (company-selection-wrap-around t)
+           )
+  :bind (
+         (:company-active-map
+          ("C-n" . company-select-next)
+          ("C-p" . company-select-previous)
+          ("C-h" . nil)
+          )
+         )
   )
 
-;; (when (require 'lsp-mode nil t)
-;;   (with-eval-after-load 'lsp-mode
-;;     (require 'lsp-clangd)
-;;     (setq lsp-clangd-executable "/usr/bin/clangd")
-;;     (add-hook 'c-mode-hook #'lsp-clangd-c-enable)
-;;     (add-hook 'c++-mode-hook #'lsp-clangd-c++-enable)
-;;     (add-hook 'objc-mode-hook #'lsp-clangd-objc-enable)
-;;     )
-;;   )
-
-(when (require 'company-lsp nil t)
-  (push 'company-lsp company-backends)
-  )
-
-(defun test ()
-  ""
-  (interactive)
-  (setq dir buffer-file-name)
-  (setq result_a (replace-regexp-in-string "[^/]+/[^/]+$" "" dir))
-  (message "%s" result_a)
-  )
-
-(defun get-Qt_Project-root ()
-  ""
-
-  )
-
-(when (require 'irony nil t)
-  (defun company-irony-hook ()
-    "my irony hook"
-    (when (member major-mode irony-supported-major-modes)
-      (irony-mode t)
-      )
-    (setq project-root-path (replace-regexp-in-string "/[^/]+/[^/]+$" "" buffer-file-name))
-
-    (irony-cdb-json-add-compile-commands-path project-root-path
-                        (concat project-root-path "/build/compile_commands.json"))
-    (irony-cdb-autosetup-compile-options)
+(leaf *posframes
+  :config
+  (leaf company-posframe
+    :ensure t
+    :after company posframe
+    :custom (
+             (require 'subr-x)
+             (company-posframe-mode . t)
+             (company-posframe-show-indicator . nil)
+             (company-posframe-show-metadata . nil)
+             (company-posframe-quickhelp-delay nil)
+             )
     )
-
-  ;; (add-hook 'c-mode-hook #'company-irony-hook)
-  (add-hook 'c++-mode-hook #'company-irony-hook)
-  ;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-
-  (eval-after-load 'company
-  '(add-to-list 'company-backends 'company-irony))
   )
 
-(when (require 'web-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.blade\\.php\\'" . web-mode))
-  (setq web-mode-engines-alist
-      '(("php"    . "\\.phtml\\'")
-        ("blade"  . "\\.blade\\."))
-      )
+(leaf js2-mode
+  :ensure t
+  :disabled t
   )
 
-(when (require 'js2-mode nil t)
-  (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+(leaf php-mode
+  :ensure t
+  :disabled t
   )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(delete-selection-mode nil)
- '(package-selected-packages
-   (quote
-    (php-mode ccls lsp-mode lsp-ui lsp-clangd company-lsp flycheck cmake-mode web-mode path-headerline-mode js2-mode ddskk counsel company-irony))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+(leaf web-mode
+  :ensure t
+  :disabled t
+  )
+
+(leaf cmake-mode
+  :ensure t
+  :disabled t
+  )
