@@ -95,21 +95,6 @@
     (load custom-file))
   )
 
-
-(leaf counsel
-  :doc "include ivy swipper"
-  :ensure t
-  :custom (
-           (ivy-mode . t)
-           )
-  :bind (
-         ("C-s" . swiper)
-         ("C-x C-r" . counsel-recentf)
-         ("M-x" . counsel-M-x)
-         ("M-y" . counsel-yank-pop)
-         )
-  )
-
 (leaf ddskk
   :ensure t
   :custom (
@@ -120,6 +105,56 @@
            )
   )
 
+(leaf mwim
+  :ensure t
+  :bind(
+        ("C-a" . mwim-beginning)
+        ("C-e" . mwim-end)
+        )
+  )
+
+
+(leaf counsel
+  :doc "include ivy swipper"
+  :ensure t
+  :custom (
+           (ivy-wrap . t)
+           (ivy-mode . t)
+           )
+  :bind (
+         ("C-s" . swiper)
+         ("C-x C-b" . ivy-switch-buffer)
+         ("C-x C-f" . counsel-find-file)
+         ("C-x C-r" . counsel-recentf)
+         ("M-x" . counsel-M-x)
+         ("M-y" . counsel-yank-pop)
+         )
+  :config
+  (leaf ivy-posframe
+    :ensure t
+    :after ivy posframe
+    :custom (
+             (ivy-posframe-display-functions-alist . '(
+                                                       (counsel-find-file . ivy-posframe-display-at-point)
+                                                       (counsel-M-x . ivy-posframe-display-at-point)
+                                                       (counsel-recentf . ivy-posframe-display-at-point)
+                                                       (counsel-yank-pop . ivy-posframe-display-at-point)
+
+                                                       (ivy-switch-buffer . ivy-posframe-display-at-point)
+                                                       (t . ivy-posframe-display-at-frame-bottom-window-center)
+                                                       )
+                                                   )
+             (ivy-posframe-mode . t)
+             )
+    )
+  (leaf ivy-rich
+    :ensure t
+    :custom (
+             (ivy-rich-mode . t)
+             )
+   )
+  )
+
 (leaf company
   :doc ""
   :ensure t
@@ -128,6 +163,7 @@
            (company-idle-delay . 0)
            (company-minimum-prefix-length . 2)
            (company-selection-wrap-around t)
+           (company-dabbrev-downcase nil)
            )
   :bind (
          (:company-active-map
@@ -136,9 +172,6 @@
           ("C-h" . nil)
           )
          )
-  )
-
-(leaf *posframes
   :config
   (leaf company-posframe
     :ensure t
@@ -153,19 +186,17 @@
     )
   )
 
+
 (leaf js2-mode
   :ensure t
-  :disabled t
   )
 
 (leaf php-mode
   :ensure t
-  :disabled t
   )
 
 (leaf web-mode
   :ensure t
-  :disabled t
   )
 
 (leaf cmake-mode
