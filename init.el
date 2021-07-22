@@ -162,8 +162,8 @@
            (global-company-mode . t)
            (company-idle-delay . 0)
            (company-minimum-prefix-length . 2)
-           (company-selection-wrap-around t)
-           (company-dabbrev-downcase nil)
+           (company-selection-wrap-around . t)
+           (company-dabbrev-downcase . nil)
            )
   :bind (
          (:company-active-map
@@ -181,7 +181,7 @@
              (company-posframe-mode . t)
              (company-posframe-show-indicator . nil)
              (company-posframe-show-metadata . nil)
-             (company-posframe-quickhelp-delay nil)
+             (company-posframe-quickhelp-delay . nil)
              )
     )
   )
