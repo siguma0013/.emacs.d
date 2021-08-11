@@ -93,9 +93,15 @@
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
   (when (file-exists-p custom-file)
     (load custom-file))
+
+  (unless (package-installed-p 'leaf)
+    (package-refresh-contents)
+    (package-install 'leaf)
+    )
   )
 
 (leaf ddskk
+  :doc "日本語入力"
   :ensure t
   :custom (
            (skk-large-jisyo . "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
@@ -106,6 +112,7 @@
   )
 
 (leaf mwim
+  :doc "行頭・行末移動の改善"
   :ensure t
   :bind(
         ("C-a" . mwim-beginning)
