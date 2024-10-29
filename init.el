@@ -11,13 +11,22 @@
   :custom `((custom-file . ,(locate-user-emacs-file ".custom.el"))))
 
 (leaf builtin-ui
+  :doc "ビジュアルに関する設定"
   :custom ((line-number-mode . nil)     ; モードラインに行番号
            (column-number-mode . nil)   ; モードラインに列番号
 
            (custom-enabled-themes . '(tango-dark)) ; テーマ選択
-           ))
+           )
+  :config
+  (leaf display-line-numbers
+    :doc "行番号表示"
+    :global-minor-mode global-display-line-numbers-mode
+    :custom (display-line-numbers-width . 3) ; 確保する最低幅
+    )
+  )
 
 (leaf builtin-feature
+  :doc "機能に関する設定"
   :custom ((make-backup-files . nil)          ; バックアップファイル
            (auto-save-default . nil)          ; 自動保存
            (auto-save-list-file-prefix . nil) ; 自動保存リスト
@@ -44,7 +53,7 @@
   (leaf show-paren
     :doc "括弧のハイライト"
     :global-minor-mode t
-    :custom (show-parent-style . 'mixed)
+    :custom (show-paren-style . 'mixed)
     )
   )
 
@@ -116,4 +125,24 @@
   :package t)
 
 (leaf vterm
-  :package t)
+  :package t
+  :custom (vterm-shell . "/usr/bin/fish")
+  :config
+  (leaf vterm-toggle
+    :package t
+    :bind (("<f2>" . vterm-toggle)
+           (:vterm-mode-map
+            ("<f2>" . vterm-toggle))
+           )
+    :config
+    (add-to-list 'display-buffer-alist
+                 '((lambda (buffer-or-name _)
+                     (let ((buffer (get-buffer buffer-or-name)))
+                       (with-current-buffer buffer
+                         (or (equal major-mode 'vterm-mode)
+                             (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                   (display-buffer-reuse-window display-buffer-at-bottom)
+                   (reusable-frames . visible)
+                   (window-height . 0.3)))
+    )
+  )
