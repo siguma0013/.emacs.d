@@ -161,3 +161,5 @@
   :package t
   :mode (("\\.php\\'" . web-mode)))
 (put 'dired-find-alternate-file 'disabled nil)
+
+; テストのため
