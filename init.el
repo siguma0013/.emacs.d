@@ -57,8 +57,18 @@
     )
   )
 
+(add-to-list 'auto-mode-alist '("\\.rb\\'" . enh-ruby-mode))
+
+(leaf *builtin-major-mode
+  :config
+  (leaf js-mode
+    :mode (("\\.mjs\\'" . js-mode))
+    )
+  )
+
 (leaf global-set-key
   :bind (("C-h" . delete-backward-char)
+         ("C-x C-b" . bs-show)
          ))
 
 ;; ELPA config
@@ -146,3 +156,8 @@
                    (window-height . 0.3)))
     )
   )
+
+(leaf web-mode
+  :package t
+  :mode (("\\.php\\'" . web-mode)))
+(put 'dired-find-alternate-file 'disabled nil)
