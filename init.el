@@ -57,15 +57,6 @@
     )
   )
 
-(add-to-list 'auto-mode-alist '("\\.rb\\'" . enh-ruby-mode))
-
-(leaf *builtin-major-mode
-  :config
-  (leaf js-mode
-    :mode (("\\.mjs\\'" . js-mode))
-    )
-  )
-
 (leaf global-set-key
   :bind (("C-h" . delete-backward-char)
          ("C-x C-b" . bs-show)
@@ -74,16 +65,21 @@
 ;; ELPA config
 
 (leaf ddskk
-  :doc "input method"
+  :doc "インプットメソッド"
   :package t
-  :hook (isearch-mode-hook . skk-isearch-hook-silent)
+  :hook ((isearch-mode-hook . skk-isearch-hook-silent)
+         (find-file-hook . ddskk-auto-boot))
   :custom ((skk-status-indicator . 'minor-mode)
            (default-input-method . "japanese-skk")
            (skk-large-jisyo . "~/.emacs.d/skk-get-jisyo/SKK-JISYO.L")
            (skk-japanese-message-and-error . t)
            )
   :config
-  (defun skk-isearch-hook-silent ())
+  (defun skk-isearch-hook-silent ()
+    "ddskkのisearch-mode-hook設定推奨メッセージを抑制する為の関数")
+  (defun ddskk-auto-boot ()
+    "ファイルを開くたびにC-\\しない為の関数"
+    (skk-latin-mode t))
   )
 
 (leaf mwim
@@ -117,6 +113,12 @@
     )
   )
 
+(leaf ace-window
+  :doc "ウィンドウ移動の改善"
+  :package t
+  :bind ("C-x o" . ace-window)
+  )
+
 (leaf company
   :doc "入力補完"
   :package t
@@ -131,19 +133,31 @@
   :package t
   :global-minor-mode t)
 
-(leaf magit
-  :package t)
+(leaf *git
+  :doc "git関連拡張機能"
+  :config
+  (leaf magit
+    :doc "クライアント"
+    :package t
+    )
+  (leaf git-gutter
+    :doc "変更箇所のリアルタイム表示"
+    :package t
+    :global-minor-mode global-git-gutter-mode
+    )
+  )
 
 (leaf vterm
+  :doc "ターミナル"
   :package t
-  :custom (vterm-shell . "/usr/bin/fish")
+  :bind (("<f2>" . vterm-toggle))
+  :custom ((vterm-shell . "/usr/bin/fish")
+           (vterm-keymap-exceptions . '("<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-y" "M-y"))
+           )
   :config
   (leaf vterm-toggle
+    :doc "ポップアップ表示"
     :package t
-    :bind (("<f2>" . vterm-toggle)
-           (:vterm-mode-map
-            ("<f2>" . vterm-toggle))
-           )
     :config
     (add-to-list 'display-buffer-alist
                  '((lambda (buffer-or-name _)
@@ -157,9 +171,37 @@
     )
   )
 
+(leaf lsp-mode
+  :package t)
+
 (leaf web-mode
   :package t
-  :mode (("\\.php\\'" . web-mode)))
+  :mode (("\\.php\\'" . web-mode))
+  :custom ((web-mode-block-padding . 0)
+           (web-mode-script-padding . 4))
+  )
+
 (put 'dired-find-alternate-file 'disabled nil)
 
-; テストのため
+(leaf treesit
+  :config
+  (setq treesit-font-lock-level 4)
+  )
+
+;; 開発言語設定
+
+(leaf js-ts-mode
+  :mode "\\.js\\'" "\\.mjs\\'"
+  )
+
+(leaf typescript-ts-mode
+  :mode "\\.ts\\'"
+  )
+
+(leaf markdown-mode
+  :package t
+  :mode (("\\.md\\'" . gfm-mode)))
+
+(setq lsp-disabled-clients '((typescript-ts-mode . vue-semantic-server)))
+
+(add-to-list 'lsp-disabled-clients '(js-ts-mode . vue-semantic-server))
