@@ -109,7 +109,10 @@
     :doc "検索等のマッチングの曖昧化"
     :package t
     :config
-    (setq completion-styles '(orderless))
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides nil)
+    ;; (setq completion-styles '(orderless))
     )
   )
 
@@ -122,6 +125,7 @@
 (leaf company
   :doc "入力補完"
   :package t
+  :disabled t
   :global-minor-mode global-company-mode
   :custom ((company-idle-delay . 0)
            (company-minimum-prefix-length . 2)
@@ -172,14 +176,34 @@
   )
 
 (leaf lsp-mode
-  :package t)
+  :package t
+  :config
+  (leaf lsp-ui
+    :package t)
+  (leaf lsp-treemacs
+    :package t)
+
+  )
+
+(leaf yasnippet
+  :package t
+  :config
+  (yas-global-mode t))
 
 (leaf web-mode
   :package t
-  :mode (("\\.php\\'" . web-mode))
+  :mode (("\\.php\\'" . web-mode)
+         ("\\.vue\\'" . web-mode)
+         )
   :custom ((web-mode-block-padding . 0)
            (web-mode-script-padding . 4))
   )
+
+(add-hook 'editorconfig-after-apply-functions
+          (lambda (props)
+            (setq web-mode-style-padding 0)
+            (setq web-mode-script-padding 0)
+            ))
 
 (put 'dired-find-alternate-file 'disabled nil)
 
@@ -188,7 +212,25 @@
   (setq treesit-font-lock-level 4)
   )
 
+(setq lsp-bridge-python-command "/usr/bin/python3.11")
+(setq lsp-bridge-user-langserver-dir "/data/emacs.d/laugserver/")
+
+  (setq lsp-bridge-lang-server-map
+        '((markdown-mode . "marksman")
+          (gfm-mode . "marksman")))
+(leaf lsp-bridge
+  :vc (:url "https://github.com/manateelazycat/lsp-bridge.git")
+  :disabled t
+  ;; :custom((lsp-bridge-python-command . "/usr/bin/python3.11"))
+  :config
+  ;; (setq lsp-bridge-python-command "/usr/bin/python3.11")
+
+  (global-lsp-bridge-mode)
+  )
+
 ;; 開発言語設定
+
+(leaf cmake-mode)
 
 (leaf js-ts-mode
   :mode "\\.js\\'" "\\.mjs\\'"
@@ -197,10 +239,61 @@
 (leaf typescript-ts-mode
   :mode "\\.ts\\'"
   )
+(leaf tsx-ts-mode
+  :mode "\\.tsx\\'"
+  )
 
-(leaf markdown-mode
-  :package t
-  :mode (("\\.md\\'" . gfm-mode)))
+
+(use-package markdown-mode
+  ;; :hook (markdown-mode . lsp)
+  :config
+  (require 'lsp-marksman)
+  (add-hook 'markdown-mode-hook
+          (lambda ()
+            (setq-local company-backends
+                        '((company-files company-capf))))))
+
+;; (leaf markdown-mode
+;;   :package t
+;;   ;; :mode (("\\.md\\'" . gfm-mode))
+;;   :config
+
+;;   (defun my/markdown-resolve-link-at-point ()
+;;     "Resolve markdown link at point relative to project root."
+
+;;     (let* ((link (markdown-link-url (markdown-link-at-point)))
+;;            (project-root (or (project-root (project-current))
+;;                              default-directory))
+;;            (full-path (expand-file-name link project-root)))
+;;       (when (file-exists-p full-path)
+;;         full-path)))
+
+;;   (defun my/markdown-follow-link-with-project-root ()
+;;     "Open markdown link, resolving relative to project root if possible."
+;;     (interactive)
+;;     (let* (
+;;            (link (markdown-link-url))
+;;            ;; (my-project-current (project-root (project-current)))
+;;            (root-directory (or (project-root (project-current)) default-directory))
+;;            (full-path
+;;             (expand-file-name (if (string< "/" link)
+;;                                   (concat "." link)
+;;                                 link)
+;;                               root-directory))
+;;            )
+
+;;       (find-file full-path)
+;;       )
+;;     )
+
+  ;; (with-eval-after-load 'markdown-mode
+  ;;   (define-key markdown-mode-map (kbd "C-c C-o") #'my/markdown-follow-link-with-project-root))
+  ;; )
+
+;; (use-package markdown-mode
+;;   :hook (markdown-mode . lsp)
+;;   :config
+;;   (require 'lsp-marksman))
 
 (setq lsp-disabled-clients '((typescript-ts-mode . vue-semantic-server)))
 
