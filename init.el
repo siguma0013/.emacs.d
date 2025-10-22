@@ -133,6 +133,21 @@
            (company-dabbrev-downcase . nil)
            ))
 
+(leaf *leaf
+  :config
+  (leaf leaf-tree
+    :url ""
+    :package t))
+
+(leaf imenu-list
+  :package t
+  :bind ("C-t" . imenu-list-smart-toggle)
+  :custom ((imenu-list-focus-after-activation . t) ;imenu-list-smart-toggle後のフォーカス移動
+           (imenu-list-auto-resze . t)
+           (imenu-list-position . 'left) ;表示位置
+           (imenu-list-size . 0.15)
+           ))
+
 (leaf editorconfig
   :package t
   :global-minor-mode t)
