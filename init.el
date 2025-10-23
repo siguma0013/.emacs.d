@@ -55,6 +55,7 @@
     :global-minor-mode t
     :custom (show-paren-style . 'mixed)
     )
+  (set-default 'truncate-lines t)       ; デフォルトでは行の折り返しは無し
   )
 
 (leaf global-set-key
