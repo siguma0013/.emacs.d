@@ -244,7 +244,22 @@
   (global-lsp-bridge-mode)
   )
 
-;; 開発言語設定
+(leaf *dev-major-mode
+  :doc "開発言語設定"
+  :config
+  (leaf markdown-mode
+    :url "https://github.com/jrblevin/markdown-mode"
+    :package t
+    :mode ("\\.md\\'" . gfm-mode)
+    :hook (markdown-mode-hook . set-markdown-font)
+    :config
+    (defun set-markdown-font ()
+      "表示崩れ対策で明示的にフォントを設定する"
+      (buffer-face-set '(:family "HackGen"))
+      (set-face-attribute 'markdown-table-face nil :inherit 'unspecified)
+      )
+    )
+  )
 
 (leaf cmake-mode)
 
