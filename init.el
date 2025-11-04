@@ -274,57 +274,9 @@
   :mode "\\.tsx\\'"
   )
 
-
-(use-package markdown-mode
-  ;; :hook (markdown-mode . lsp)
-  :config
-  (require 'lsp-marksman)
-  (add-hook 'markdown-mode-hook
-          (lambda ()
-            (setq-local company-backends
-                        '((company-files company-capf))))))
-
-;; (leaf markdown-mode
-;;   :package t
-;;   ;; :mode (("\\.md\\'" . gfm-mode))
-;;   :config
-
-;;   (defun my/markdown-resolve-link-at-point ()
-;;     "Resolve markdown link at point relative to project root."
-
-;;     (let* ((link (markdown-link-url (markdown-link-at-point)))
-;;            (project-root (or (project-root (project-current))
-;;                              default-directory))
-;;            (full-path (expand-file-name link project-root)))
-;;       (when (file-exists-p full-path)
-;;         full-path)))
-
-;;   (defun my/markdown-follow-link-with-project-root ()
-;;     "Open markdown link, resolving relative to project root if possible."
-;;     (interactive)
-;;     (let* (
-;;            (link (markdown-link-url))
-;;            ;; (my-project-current (project-root (project-current)))
-;;            (root-directory (or (project-root (project-current)) default-directory))
-;;            (full-path
-;;             (expand-file-name (if (string< "/" link)
-;;                                   (concat "." link)
-;;                                 link)
-;;                               root-directory))
-;;            )
-
-;;       (find-file full-path)
-;;       )
-;;     )
-
-  ;; (with-eval-after-load 'markdown-mode
-  ;;   (define-key markdown-mode-map (kbd "C-c C-o") #'my/markdown-follow-link-with-project-root))
-  ;; )
-
-;; (use-package markdown-mode
-;;   :hook (markdown-mode . lsp)
-;;   :config
-;;   (require 'lsp-marksman))
+(leaf php-ts-mode
+  :mode "\\.php\\'"
+  )
 
 (setq lsp-disabled-clients '((typescript-ts-mode . vue-semantic-server)))
 
