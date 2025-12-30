@@ -228,15 +228,20 @@
   (setq treesit-font-lock-level 4)
   )
 
-(setq lsp-bridge-python-command "/usr/bin/python3.11")
-(setq lsp-bridge-user-langserver-dir "/data/emacs.d/laugserver/")
+(setq lsp-bridge-python-command "~/.emacs.d/python-venv/bin/python")
 
   (setq lsp-bridge-lang-server-map
         '((markdown-mode . "marksman")
           (gfm-mode . "marksman")))
+(setq lsp-bridge-enable-hover-diagnostic t)
+(setq lsp-bridge-enable-diagnostics t)
 (leaf lsp-bridge
+  ;; :package '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+  ;;           :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
+  ;;           :build (:not compile))
   :vc (:url "https://github.com/manateelazycat/lsp-bridge.git")
-  :disabled t
+
+  ;; :disabled t
   ;; :custom((lsp-bridge-python-command . "/usr/bin/python3.11"))
   :config
   ;; (setq lsp-bridge-python-command "/usr/bin/python3.11")
