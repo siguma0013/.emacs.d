@@ -257,6 +257,7 @@
       "表示崩れ対策で明示的にフォントを設定する"
       (buffer-face-set '(:family "HackGen"))
       (set-face-attribute 'markdown-table-face nil :inherit 'unspecified)
+      (set-face-attribute 'markdown-code-face nil :inherit 'unspecified)
       )
     )
   )
