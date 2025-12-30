@@ -1,12 +1,3 @@
-(eval-and-compile
-  (customize-set-variable
-   'package-archives '(("org" . "https://orgmode.org/elpa/")
-                       ("melpa" . "https://melpa.org/packages/")
-                       ("gnu" . "https://elpa.gnu.org/packages/")))
-  (package-initialize)
-  (use-package leaf :ensure t)
-  )
-
 (leaf custom-file
   :custom `((custom-file . ,(locate-user-emacs-file ".custom.el"))))
 
@@ -67,7 +58,8 @@
 
 (leaf ddskk
   :doc "インプットメソッド"
-  :package t
+  :disabled t
+  :elpaca t
   :hook ((isearch-mode-hook . skk-isearch-hook-silent)
          (find-file-hook . ddskk-auto-boot))
   :custom ((skk-status-indicator . 'minor-mode)
@@ -85,7 +77,7 @@
 
 (leaf mwim
   :doc "行頭・行端移動の改善"
-  :package t
+  :elpaca t
   :bind (("C-a" . mwim-beginning)
          ("C-e" . mwim-end)
          ))
@@ -94,21 +86,21 @@
   :config
   (leaf vertico
     :doc "各種コマンドのUI改善"
-    :package t
+    :elpaca t
     :global-minor-mode vertico-mode
     )
   (leaf consult
-    :package t
+    :elpaca t
     :bind ("C-s" . consult-line)
     )
   (leaf marginalia
     :doc "各種コマンドの注釈追加"
-    :package t
+    :elpaca t
     :global-minor-mode marginalia-mode
     )
   (leaf orderless
     :doc "検索等のマッチングの曖昧化"
-    :package t
+    :elpaca t
     :config
     (setq completion-styles '(orderless basic)
           completion-category-defaults nil
@@ -119,13 +111,13 @@
 
 (leaf ace-window
   :doc "ウィンドウ移動の改善"
-  :package t
+  :elpaca t
   :bind ("C-x o" . ace-window)
   )
 
 (leaf company
   :doc "入力補完"
-  :package t
+  :elpaca t
   :disabled t
   :global-minor-mode global-company-mode
   :custom ((company-idle-delay . 0)
@@ -138,10 +130,10 @@
   :config
   (leaf leaf-tree
     :url ""
-    :package t))
+    :elpaca t))
 
 (leaf imenu-list
-  :package t
+  :elpaca t
   :bind ("C-t" . imenu-list-smart-toggle)
   :custom ((imenu-list-focus-after-activation . t) ;imenu-list-smart-toggle後のフォーカス移動
            (imenu-list-auto-resze . t)
@@ -150,7 +142,7 @@
            ))
 
 (leaf editorconfig
-  :package t
+  :elpaca t
   :global-minor-mode t)
 
 (leaf *git
@@ -158,18 +150,20 @@
   :config
   (leaf magit
     :doc "クライアント"
-    :package t
+    :elpaca
+    (transient :repo "magit/transient")
+    (magit :repo "magit/magit")
     )
   (leaf git-gutter
     :doc "変更箇所のリアルタイム表示"
-    :package t
+    :elpaca t
     :global-minor-mode global-git-gutter-mode
     )
   )
 
 (leaf vterm
   :doc "ターミナル"
-  :package t
+  :elpaca t
   :bind (("<f2>" . vterm-toggle))
   :custom ((vterm-shell . "/usr/bin/fish")
            (vterm-keymap-exceptions . '("<f2>" "C-c" "C-x" "C-u" "C-g" "C-l" "M-x" "M-o" "C-y" "M-y"))
@@ -177,7 +171,7 @@
   :config
   (leaf vterm-toggle
     :doc "ポップアップ表示"
-    :package t
+    :elpaca t
     :config
     (add-to-list 'display-buffer-alist
                  '((lambda (buffer-or-name _)
@@ -192,22 +186,22 @@
   )
 
 (leaf lsp-mode
-  :package t
+  :elpaca t
   :config
   (leaf lsp-ui
-    :package t)
+    :elpaca t)
   (leaf lsp-treemacs
-    :package t)
+    :elpaca t)
 
   )
 
 (leaf yasnippet
-  :package t
+  :elpaca t
   :config
   (yas-global-mode t))
 
 (leaf web-mode
-  :package t
+  :elpaca t
   :mode (("\\.php\\'" . web-mode)
          ("\\.vue\\'" . web-mode)
          )
@@ -236,10 +230,10 @@
 (setq lsp-bridge-enable-hover-diagnostic t)
 (setq lsp-bridge-enable-diagnostics t)
 (leaf lsp-bridge
-  ;; :package '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
-  ;;           :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
-  ;;           :build (:not compile))
-  :vc (:url "https://github.com/manateelazycat/lsp-bridge.git")
+  :elpaca '(lsp-bridge :type git :host github :repo "manateelazycat/lsp-bridge"
+            :files (:defaults "*.el" "*.py" "acm" "core" "langserver" "multiserver" "resources")
+            :build (:not compile))
+  ;; :vc (:url "https://github.com/manateelazycat/lsp-bridge.git")
 
   ;; :disabled t
   ;; :custom((lsp-bridge-python-command . "/usr/bin/python3.11"))
@@ -254,7 +248,7 @@
   :config
   (leaf markdown-mode
     :url "https://github.com/jrblevin/markdown-mode"
-    :package t
+    :elpaca t
     :mode ("\\.md\\'" . gfm-mode)
     :hook (markdown-mode-hook . set-markdown-font)
     :config
