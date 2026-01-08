@@ -75,6 +75,13 @@
     (skk-latin-mode t))
   )
 
+(leaf reskk
+  :doc "作成中インプットメソッド"
+  :elpaca '(reskk :type git :host github :repo "siguma0013/reskk"
+                  :files ("app/*.el"))
+  )
+
+
 (leaf mwim
   :doc "行頭・行端移動の改善"
   :elpaca t
